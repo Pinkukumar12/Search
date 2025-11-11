@@ -1,0 +1,480 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Search Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #3498db;
+        }
+
+        .search-box button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0 30px;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #2980b9;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover {
+            background: #d5dbdb;
+        }
+
+        .category-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .results-info {
+            margin-bottom: 20px;
+            color: #7f8c8d;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .result-card a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .result-card p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .result-card .category {
+            display: inline-block;
+            background: #ecf0f1;
+            color: #7f8c8d;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            grid-column: 1 / -1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input {
+                border-radius: 50px;
+                margin-bottom: 10px;
+            }
+
+            .search-box button {
+                border-radius: 50px;
+                padding: 12px;
+            }
+
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modern Search Engine</h1>
+            <p>Find websites, articles, and resources quickly and easily</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search for websites, descriptions, or categories...">
+                <button id="search-btn">Search</button>
+            </div>
+
+            <div class="categories">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="technology">Technology</button>
+                <button class="category-btn" data-category="education">Education</button>
+                <button class="category-btn" data-category="entertainment">Entertainment</button>
+                <button class="category-btn" data-category="news">News</button>
+                <button class="category-btn" data-category="editer">editer</button>
+            </div>
+
+            <div class="results-info">
+                <span id="results-count">Showing all websites</span>
+            </div>
+        </div>
+
+        <div class="results-container" id="results-container">
+            <!-- Results will be populated by JavaScript -->
+        </div>
+
+        <footer>
+            <p>Modern Search Engine &copy; 2023 | Frontend Implementation</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample data - websites with name, URL, description, and category
+        const websites = [
+            {
+                name: "Google",
+                url: "https://www.google.com",
+                description: "Search the world's information, including webpages, images, videos and more.",
+                category: "technology"
+            },
+            {
+                name: "Hitsixlive",
+                url: "https://hitsixlive.3xl.xyz/?m=1",
+                description: "Live Cricket Streaming | Watch Free Live Cricket Match Online in HD. Get T20, IPL, World Cup, and Test Match Live Scores. Watch Star Sports, Sony Ten, Willow TV, Sky Sports live match live TV movie",
+                category: "entertainment"
+            },
+            {
+                name: "Typeemaster",
+                url: "https://typeemaster.blogspot.com/",
+                description: " offers a free online Typing Test and exciting typing games and keyboarding practice. Check your wpm for free now! typing master",
+                category: "education"
+            },
+            {
+                name: "medicalcertificategenerator",
+                url: "https://medicalcertificategenerator.com/",
+                description: "Download a Handwritten Medical Certificate in 5 Seconds! Generate authentic-looking certificates instantly for fun and creative use. No medical consultation. medical certificate generator ",
+                category: "editer"
+            },
+            {
+                name: "BBC News",
+                url: "https://www.bbc.com/news",
+                description: "Visit BBC News for up-to-the-minute news, breaking news, video, audio and feature stories.",
+                category: "news"
+            },
+            {
+                name: "GitHub",
+                url: "https://github.com",
+                description: "GitHub is where over 100 million developers shape the future of software together.",
+                category: "technology"
+            },
+            {
+                name: "Brainycalcpro",
+                url: "https://brainycalcpro.blogspot.com",
+                description: "This is an online scientific calculator with double-digit precision that supports both button click and keyboard type. smart math",
+                category: "education"
+            },
+            {
+                name: "Netflix",
+                url: "https://www.netflix.com",
+                description: "Watch Netflix movies & TV shows online or stream right to your smart TV, game console, PC, Mac, mobile, tablet and more.",
+                category: "entertainment"
+            },
+            {
+                name: "The New York Times",
+                url: "https://www.nytimes.com",
+                description: "Live news, investigations, opinion, photos and video by the journalists of The New York Times from more than 150 countries around the world.",
+                category: "news"
+            },
+            {
+                name: "Remove bg",
+                url: "https://toolvbox.blogspot.com/2025/01/blog-post.html?m=1",
+                description: "All-in-one AI background remover & generator. remove.bg is your go-to, high-quality background remover, making it easy to cut out a picture and isolate the",
+                category: "editer"
+            },
+            {
+                name: "Stack Overflow",
+                url: "https://stackoverflow.com",
+                description: "Stack Overflow is the largest, most trusted online community for developers to learn, share their programming knowledge.",
+                category: "technology"
+            },
+            {
+                name: "Khan Academy",
+                url: "https://www.khanacademy.org",
+                description: "A personalized learning resource for all ages. Khan Academy offers practice exercises, instructional videos, and a personalized learning dashboard.",
+                category: "education"
+            }, 
+             {
+     name: "Webcam360",
+     url: "https://webcam360.org/",
+     description: "Free online webcam capture and streaming app. Monitor, capture, and share live camera feeds in real-time. Best free camera monitoring and capturing tool",
+     category: "technology"
+ }, 
+  {
+                name: "Proxyearth",
+                url: "https://proxyearth.org/",
+                description: "Track mobile numbers in India. Find live location, operator details & owner info instantly. Free number tracker..",
+                category: "technology"
+            }, 
+           {
+      name: "intelx.io",
+      url: "https://intelx.io/",
+      description: "Intelligence X is a search engine and data archive. Search Tor, I2P, data leaks and the public web by email, domain, IP, CIDR, Bitcoin address and more.",
+      category: "technology"
+  }, 
+    {
+                name: "Shodan.io",
+                url: "https://www.shodan.io/",
+                description: "The entire Shodan platform (crawling, IP lookups, searching, data streaming) is available to developers. Use our API to understand whether users are connecting.",
+                category: "technology"
+            }, 
+              {
+                name: "Fofa.info",
+                url: "https://en.fofa.info/",
+                description: "FOFA is a Cyberspace search engine. By conducting Cyberspace mapping, it can help researchers or enterprises quickly match network assets",
+                category: "technology"
+            }, 
+              {
+                name: "Photext.shop",
+                url: "https://photext.shop/",
+                description: "How to Edit Text In Image? · 1. Upload. Select the image you want to edit text and upload it to PhoText. · 2. Edit Text. Click text in your image you want  photo and PDF text editor", 
+                category: "editer"
+            }, 
+              {
+                name: "Jollymod",
+                url: "https://www.jollymod.com/",
+                description: "Cartoon TV App Hindi - XON. App. v10. 51 MB. MovieBox. New. Mod. MovieBox. App. v3.0. 50 MB. Red Flash Bomber APK — Call, SMS . Mod APK download crack version",
+                category: "technology"
+            }, 
+              {
+                name: "Rendmail",
+                url: "https://rendmail.3xl.xyz",
+                description: "gmail generator Generate unlimited Gmail addresses for free with Random Mail Create. No registration needed! Protect your privacy, avoid spam, and create multiple accounts easily. Works on all devices!.",
+                category: "technology"
+            },
+              {
+                name: "Imgwale",
+                url: "https://imgwale.3xl.xyz/?m=1",
+                description: "Upload and share your images instantly with ImgWale. Fast, free, secure image hosting with direct image URLs and copy link support. No sign-up needed.",
+                category: "technology"
+            }, 
+              {
+                name: "Webcode Viewer ",
+                url: "https://toolvbox.blogspot.com/2025/01/blog-post.html?m=1",
+                description: "Best Online Source Code Viewer – Instantly View & Format Any Code html viewer css js code",
+                category: "technology"
+            }
+        ];
+
+        // DOM elements
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const resultsCount = document.getElementById('results-count');
+
+        // Current filter state
+        let currentCategory = 'all';
+        let currentSearchTerm = '';
+
+        // Initialize the page
+        function init() {
+            displayResults(websites);
+            setupEventListeners();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active category button
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Set current category and filter
+                    currentCategory = this.getAttribute('data-category');
+                    filterResults();
+                });
+            });
+        }
+
+        // Perform search based on input
+        function performSearch() {
+            currentSearchTerm = searchInput.value.trim().toLowerCase();
+            filterResults();
+        }
+
+        // Filter results based on category and search term
+        function filterResults() {
+            let filteredWebsites = websites;
+
+            // Filter by category
+            if (currentCategory !== 'all') {
+                filteredWebsites = filteredWebsites.filter(website => 
+                    website.category === currentCategory
+                );
+            }
+
+            // Filter by search term
+            if (currentSearchTerm) {
+                filteredWebsites = filteredWebsites.filter(website => 
+                    website.name.toLowerCase().includes(currentSearchTerm) ||
+                    website.description.toLowerCase().includes(currentSearchTerm) ||
+                    website.url.toLowerCase().includes(currentSearchTerm)
+                );
+            }
+
+            // Display results
+            displayResults(filteredWebsites);
+        }
+
+        // Display results in the container
+        function displayResults(results) {
+            resultsContainer.innerHTML = '';
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <h3>No results found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                resultsCount.textContent = `No results found`;
+                return;
+            }
+
+            results.forEach(website => {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `
+                    <h3>${website.name}</h3>
+                    <a href="${website.url}" target="_blank">${website.url}</a>
+                    <p>${website.description}</p>
+                    <span class="category">${website.category}</span>
+                `;
+                resultsContainer.appendChild(resultCard);
+            });
+
+            // Update results count
+            const categoryText = currentCategory === 'all' ? '' : ` in ${currentCategory}`;
+            const searchText = currentSearchTerm ? ` for "${currentSearchTerm}"` : '';
+            resultsCount.textContent = `Showing ${results.length} websites${categoryText}${searchText}`;
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
