@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Happy New Year 2026 ✨</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Sofia&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Image Download Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-color: #000000;
+            --theme-color: #FFD700; /* Default Gold */
+            --theme-grad: linear-gradient(135deg, #FFE000, #FFB300);
+            --neon-blue: #00f3ff;
+            --glass: rgba(255, 255, 255, 0.1);
+            --text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        /* --- FIREWORKS CANVAS --- */
+        #fireworks {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+        }
+
+        /* --- REVEAL OVERLAY --- */
+        #reveal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .gift-box {
+            font-size: 100px; color: var(--theme-color); cursor: pointer;
+            filter: drop-shadow(0 0 30px var(--theme-color));
+            animation: bounce 2s infinite;
+            margin: 20px;
+        }
+        
+        .tap-hint { color: #aaa; animation: pulse 1s infinite; font-size: 14px; }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            padding-bottom: 120px;
+            display: none;
+            opacity: 0;
+            backdrop-filter: blur(3px);
+        }
+
+        .container.show-content {
+            display: block;
+            animation: zoomIn 0.8s forwards;
+        }
+
+        /* --- THEME SWITCHER --- */
+        .theme-panel {
+            display: flex; justify-content: center; gap: 15px; margin-top: 60px;
+        }
+        .theme-dot {
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            border: 2px solid #fff; transition: transform 0.2s;
+        }
+        .theme-dot:active { transform: scale(0.8); }
+        .t-gold { background: #FFD700; }
+        .t-red { background: #ff2e2e; }
+        .t-blue { background: #00f3ff; }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 { font-family: 'Sofia', cursive; }
+        
+        .theme-text {
+            background: var(--theme-grad); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--text-shadow);
+        }
+
+        /* --- CAPTURE AREA (For Image Download) --- */
+        #capture-area {
+            background: rgba(255,255,255,0.02);
+            padding: 20px 10px;
+            border-radius: 20px;
+            margin: 10px;
+            border: 1px dashed #333;
+        }
+
+        /* --- PHOTO FRAME --- */
+        .frame-box {
+            width: 260px; height: 260px; margin: 15px auto;
+            position: relative; background: #111;
+            border: 3px solid var(--theme-color);
+            border-radius: 15px; overflow: hidden;
+            box-shadow: 0 0 25px var(--theme-color);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .frame-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+        /* --- COUNTDOWN --- */
+        .countdown { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
+        .time-box { background: rgba(255,255,255,0.1); border: 1px solid #444; padding: 10px; border-radius: 8px; width: 60px; }
+        .t-val { font-size: 20px; font-weight: bold; color: var(--theme-color); display: block; }
+        .t-lbl { font-size: 9px; text-transform: uppercase; color: #ccc; }
+
+        /* --- FUN SECTIONS (New Features) --- */
+        .fun-box {
+            margin: 15px; padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px; border: 1px solid #333;
+        }
+        .fun-btn {
+            background: #333; color: #fff; border: 1px solid var(--theme-color);
+            padding: 10px 20px; border-radius: 30px; margin-top: 10px; cursor: pointer;
+            font-size: 13px; width: 100%; transition: 0.3s;
+        }
+        .fun-btn:hover { background: var(--theme-color); color: #000; }
+        .result-text {
+            margin-top: 10px; color: var(--neon-blue); font-weight: bold; font-size: 14px; min-height: 20px;
+        }
+
+        /* Poll */
+        .poll-opts { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+        .poll-btn { font-size: 20px; background: none; border: 1px solid #555; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; }
+        .poll-btn.selected { background: var(--theme-color); border-color: var(--theme-color); }
+
+        /* Shayari Box */
+        .quote-box {
+            background: #111; padding: 10px; border-left: 3px solid var(--theme-color);
+            margin: 10px 0; font-size: 13px; color: #ddd; text-align: left; position: relative;
+        }
+        .copy-icon { position: absolute; right: 10px; top: 10px; color: #888; cursor: pointer; }
+
+        /* --- FORM & CREATE --- */
+        .card-panel {
+            margin: 20px; background: rgba(30,30,30,0.8);
+            padding: 20px; border-radius: 15px; border: 1px solid #333;
+        }
+        input[type="text"] {
+            width: 100%; padding: 12px; margin-bottom: 10px;
+            background: #000; border: 1px solid var(--theme-color);
+            color: #fff; border-radius: 5px; text-align: center;
+        }
+        .btn-main {
+            background: var(--theme-grad); border: none; padding: 12px; width: 100%;
+            border-radius: 50px; font-weight: bold; cursor: pointer; color: #000;
+            font-size: 16px; margin-top: 10px;
+        }
+
+        /* --- GIFT / DONATION --- */
+        .gift-section {
+            margin: 30px 15px;
+            background: linear-gradient(180deg, #151515 0%, #050505 100%);
+            border: 1px solid #333;
+            border-top: 3px solid var(--theme-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .qr-box { background: #fff; width: 140px; height: 140px; margin: 15px auto; border-radius: 10px; padding: 5px; }
+        .qr-box img { width: 100%; height: 100%; }
+        .upi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .upi-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px; border-radius: 8px; text-decoration: none;
+            color: #fff; font-size: 12px; font-weight: bold;
+        }
+        .paytm { background: #00B9F1; } .phonepe { background: #6739B7; } .gpay { background: #0F9D58; } .other { background: #333; border: 1px solid #555; }
+
+        /* --- UTILS --- */
+        .music-btn {
+            position: fixed; top: 15px; right: 15px; width: 40px; height: 40px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--theme-color); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: var(--theme-color); z-index: 1000;
+        }
+        .music-spin { animation: spin 3s linear infinite; }
+        .loader { width: 25px; height: 25px; border: 3px solid #fff; border-top-color: var(--theme-color); border-radius: 50%; animation: spin 1s infinite; margin: 10px auto; display: none; }
+        .live-counter { font-size: 11px; color: #aaa; margin-top: 10px; animation: pulse 2s infinite; }
+        
+        /* Sticky Share */
+        .share-dock {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #111; border-top: 1px solid #333;
+            padding: 10px; display: flex; justify-content: space-around;
+            z-index: 1000; display: none;
+        }
+        .share-icon { color: #fff; font-size: 24px; padding: 10px; }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- MUSIC -->
+    <div class="music-btn" onclick="toggleMusic()">
+        <i class="fas fa-music"></i>
+    </div>
+    <audio id="bg-audio"></audio>
+    <audio id="pop-sfx" src="https://assets.mixkit.co/active_storage/sfx/2007/2007-preview.mp3"></audio>
+
+    <!-- FIREWORKS BACKGROUND -->
+    <canvas id="fireworks"></canvas>
+
+    <!-- REVEAL SCREEN -->
+    <div id="reveal-overlay">
+        <h1 class="theme-text">New Year 2026</h1>
+        <div class="gift-box" onclick="openGift()">
+            <i class="fas fa-gift"></i>
+        </div>
+        <p class="tap-hint">Tap Gift to Open 👆</p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container" id="main-content">
+        
+        <!-- THEME CHANGER -->
+        <div class="theme-panel">
+            <div class="theme-dot t-gold" onclick="setTheme('gold')"></div>
+            <div class="theme-dot t-red" onclick="setTheme('red')"></div>
+            <div class="theme-dot t-blue" onclick="setTheme('blue')"></div>
+        </div>
+
+        <!-- CAPTURE AREA: What gets downloaded -->
+        <div id="capture-area">
+            <div style="padding: 10px;">
+                <h1 class="theme-text" style="font-size: 2.2rem;">Happy New Year</h1>
+                <h2 style="font-size: 4rem; color: var(--neon-blue); margin: 0; line-height: 1;">2026</h2>
+                <h3 id="wishing-name" style="margin-top: 15px; color: #ddd; font-weight: 300;">
+                    Wishing you Happiness & Success!
+                </h3>
+            </div>
+
+            <!-- COUNTDOWN -->
+            <div class="countdown">
+                <div class="time-box"><span class="t-val" id="d">00</span><span class="t-lbl">Days</span></div>
+                <div class="time-box"><span class="t-val" id="h">00</span><span class="t-lbl">Hrs</span></div>
+                <div class="time-box"><span class="t-val" id="m">00</span><span class="t-lbl">Min</span></div>
+                <div class="time-box"><span class="t-val" id="s">00</span><span class="t-lbl">Sec</span></div>
+            </div>
+
+            <!-- PHOTO FRAME -->
+            <div class="frame-box">
+                <img id="user-img" src="" alt="Photo">
+                <div id="frame-txt" style="color:#666; font-size:12px;">Your Photo Here</div>
+            </div>
+        </div>
+        <!-- End Capture Area -->
+
+        <!-- 🔥 1. FUNNY RESOLUTION -->
+        <div class="fun-box">
+            <h3 style="color:var(--theme-color);">🤣 Funny Resolution 2026</h3>
+            <button class="fun-btn" onclick="getResolution()">Get My Resolution</button>
+            <div id="res-result" class="result-text"></div>
+        </div>
+
+        <!-- 🔥 2. FUTURE PREDICTION -->
+        <div class="fun-box">
+            <h3 style="color:var(--theme-color);">🔮 2026 Future Check</h3>
+            <p style="font-size:11px; color:#aaa;">Click below to see your luck!</p>
+            <button class="fun-btn" onclick="getPrediction()">Check My Luck</button>
+            <div id="pred-result" class="result-text"></div>
+        </div>
+
+        <!-- 🔥 3. POLL SYSTEM -->
+        <div class="fun-box">
+            <h3>How was 2025? 🗳️</h3>
+            <div class="poll-opts" id="poll-area">
+                <button class="poll-btn" onclick="vote(this)">😭</button>
+                <button class="poll-btn" onclick="vote(this)">😐</button>
+                <button class="poll-btn" onclick="vote(this)">🤩</button>
+            </div>
+            <div id="poll-msg" class="result-text" style="display:none;">Thanks for Voting! ✅</div>
+        </div>
+
+        <!-- 🔥 4. SHAYARI COLLECTION -->
+        <div class="fun-box">
+            <h3 style="color:var(--theme-color);">📜 Best Wishes 2026</h3>
+            
+            <div class="quote-box">
+                "Naya saal aaye banke ujala,<br>Khul jaye aap ki kismat ka tala!"
+                <i class="fas fa-copy copy-icon" onclick="copyText(this)"></i>
+            </div>
+            
+            <div class="quote-box">
+                "Bhul jao bite huye kal ko,<br>Dil me basalo aane wale pal ko!"
+                <i class="fas fa-copy copy-icon" onclick="copyText(this)"></i>
+            </div>
+        </div>
+
+        <!-- CREATE & UPLOAD -->
+        <div class="card-panel">
+            <h3 style="color:var(--theme-color); margin-bottom:10px;">Create Your Own 🪄</h3>
+            <p style="font-size:10px; color:#aaa; margin-bottom:10px;">Check "Meaning" button to see Personality!</p>
+            
+            <input type="text" id="name-inp" placeholder="Enter Your Name">
+            
+            <!-- 🅰️ Name Personality Button -->
+            <button onclick="checkMeaning()" style="margin-bottom:10px; background:none; border:1px solid #555; color:var(--neon-blue); padding:5px 15px; border-radius:20px; font-size:11px;">
+                Check Name Meaning
+            </button>
+
+            <button onclick="document.getElementById('file-inp').click()" style="background:none; border:1px solid #555; color:#ccc; padding:8px; width:100%; border-radius:5px;">
+                <i class="fas fa-camera"></i> Select Photo
+            </button>
+            <input type="file" id="file-inp" hidden accept="image/*" onchange="uploadFile()">
+            <div class="loader" id="loader"></div>
+
+            <button class="btn-main" onclick="createCard()">Generate Link & Share ✨</button>
+            
+            <!-- 📸 DOWNLOAD IMAGE BUTTON -->
+            <button class="btn-main" onclick="downloadImage()" style="background:#333; color:#fff; border:1px solid var(--theme-color); margin-top:10px;">
+                <i class="fas fa-download"></i> Download as Image
+            </button>
+        </div>
+
+        <!-- GIFT / DONATION -->
+        <div class="gift-section">
+            <h3 style="color:var(--theme-color); margin-bottom:5px;">Send Gift 🎁</h3>
+            <p style="font-size:10px; color:#aaa;">Support the Developer</p>
+            
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=YOUR_UPI_ID_HERE&pn=Developer" alt="QR Code">
+            </div>
+
+            <p class="pay-label">Yeh paisa Web Developer ko jayega ❤️</p>
+
+            <div class="upi-grid">
+                <!-- IMPORTANT: REPLACE 'YOUR_UPI_ID_HERE' BELOW -->
+                <a href="upi://pay?pa=YOUR_UPI_ID_HERE&pn=Pinkukumar&cu=INR" class="upi-btn paytm"><i class="fas fa-wallet"></i> Paytm</a>
+                <a href="upi://pay?pa=YOUR_UPI_ID_HERE&pn=Pinkukumar&cu=INR" class="upi-btn phonepe"><i class="fas fa-mobile-alt"></i> PhonePe</a>
+                <a href="upi://pay?pa=YOUR_UPI_ID_HERE&pn=Pinkukumar&cu=INR" class="upi-btn gpay"><i class="fab fa-google-pay"></i> GPay</a>
+                <a href="upi://pay?pa=YOUR_UPI_ID_HERE&pn=Pinkukumar&cu=INR" class="upi-btn other">Other App</a>
+            </div>
+        </div>
+
+        <!-- FOOTER & COUNTER -->
+        <div class="dev-info" style="margin-top: 40px; color: #666; font-size: 12px; margin-bottom:20px;">
+            Developer by <b style="color:var(--neon-blue);">Pinkukumar (Manish)</b><br>
+            <a href="https://instagram.com/your_username" style="display: inline-block; margin-top: 8px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">
+                <i class="fab fa-instagram"></i> Follow on Instagram
+            </a>
+            <!-- 🔢 FAKE VISITOR COUNTER -->
+            <div class="live-counter">
+                ⚡ <span id="visit-count">1,245</span> people creating wishes now...
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SHARE BAR -->
+    <div class="share-dock" id="share-dock">
+        <a href="#" id="wa-link" class="share-icon" style="color:#25D366"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" id="tg-link" class="share-icon" style="color:#0088cc"><i class="fab fa-telegram-plane"></i></a>
+        <div onclick="nativeShare()" class="share-icon" style="color:#fff"><i class="fas fa-share-alt"></i></div>
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        const API_KEY = '19254db7c34c475b8b64a3cf8cc72fd8'; // Put your ImgBB Key Here
+
+        // --- MUSIC LOGIC ---
+        const songs = [
+            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"
+        ];
+        let sIdx = 0;
+        const audio = document.getElementById('bg-audio');
+
+        function toggleMusic() {
+            const b = document.querySelector('.music-btn');
+            if(audio.paused) {
+                audio.src = songs[sIdx]; audio.play();
+                b.classList.add('music-spin'); b.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audio.pause();
+                b.classList.remove('music-spin'); b.innerHTML = '<i class="fas fa-music"></i>';
+            }
+        }
+        audio.onended = () => { sIdx=(sIdx+1)%songs.length; audio.src=songs[sIdx]; audio.play(); }
+
+        // --- REVEAL ---
+        function openGift() {
+            document.getElementById('pop-sfx').play().catch(()=>{});
+            document.getElementById('reveal-overlay').style.display = 'none';
+            document.getElementById('main-content').classList.add('show-content');
+            startFire();
+            toggleMusic();
+        }
+
+        // --- THEME CHANGER ---
+        function setTheme(color) {
+            const root = document.documentElement.style;
+            if(color === 'red') {
+                root.setProperty('--theme-color', '#ff2e2e');
+                root.setProperty('--theme-grad', 'linear-gradient(135deg, #ff2e2e, #ff8f8f)');
+                root.setProperty('--neon-blue', '#ffcc00'); // Contrast
+            } else if(color === 'blue') {
+                root.setProperty('--theme-color', '#00f3ff');
+                root.setProperty('--theme-grad', 'linear-gradient(135deg, #00f3ff, #0066ff)');
+                root.setProperty('--neon-blue', '#ff00de');
+            } else {
+                // Gold (Default)
+                root.setProperty('--theme-color', '#FFD700');
+                root.setProperty('--theme-grad', 'linear-gradient(135deg, #FFE000, #FFB300)');
+                root.setProperty('--neon-blue', '#00f3ff');
+            }
+        }
+
+        // --- FUNNY RESOLUTION GENERATOR ---
+        const resolutions = [
+            "2026 mein roz nahane ka record banaunga! 🚿",
+            "Sirf free ka Wi-Fi chalaunga! 📶",
+            "Gym jaunga... sapne mein! 😴",
+            "Diet start karunga... kal se! 🍕",
+            "Mobile kam chalaunga (jhoot)! 📱",
+            "Paisa bachau... arey sale lagi hai! 🛍️"
+        ];
+        function getResolution() {
+            const r = resolutions[Math.floor(Math.random() * resolutions.length)];
+            document.getElementById('res-result').innerText = r;
+        }
+
+        // --- FUTURE PREDICTION ---
+        const predictions = [
+            "2026 mein Lottry lagne wali hai! 💰",
+            "Shaadi pakki samajho! 💍",
+            "World Tour pe jaoge! ✈️",
+            "Crush 'Yes' bolne wala hai! ❤️",
+            "Bohot sara paisa aayega! 🤑"
+        ];
+        function getPrediction() {
+            const p = predictions[Math.floor(Math.random() * predictions.length)];
+            document.getElementById('pred-result').innerText = p;
+        }
+
+        // --- POLL SYSTEM ---
+        function vote(btn) {
+            const area = document.getElementById('poll-area');
+            const msg = document.getElementById('poll-msg');
+            area.style.display = 'none';
+            msg.style.display = 'block';
+            alert("Vote Recorded! You chose: " + btn.innerText);
+        }
+
+        // --- SHAYARI COPY ---
+        function copyText(icon) {
+            const text = icon.parentElement.innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard! 📋");
+        }
+
+        // --- NAME MEANING (PERSONALITY) ---
+        function checkMeaning() {
+            const name = document.getElementById('name-inp').value;
+            if(!name) { alert("Pahle naam likho!"); return; }
+            const firstChar = name.charAt(0).toUpperCase();
+            const traits = {
+                'A': "A: You are Adventurous & Ambitious!",
+                'B': "B: You are Brave & Beautiful!",
+                'M': "M: You make Money & Magic!",
+                'P': "P: You are Popular & Perfect!",
+                'R': "R: You are Royal & Romantic!",
+                'S': "S: You are Sweet & Smart!"
+            };
+            const result = traits[firstChar] || (firstChar + ": You are Unique & Amazing!");
+            alert(result);
+        }
+
+        // --- FAKE VISITOR COUNTER ---
+        let count = 1245;
+        setInterval(() => {
+            count += Math.floor(Math.random() * 5); // Increase randomly
+            document.getElementById('visit-count').innerText = count.toLocaleString();
+        }, 3000);
+
+        // --- IMAGE DOWNLOAD (SCREENSHOT) ---
+        function downloadImage() {
+            const captureArea = document.getElementById('capture-area');
+            document.getElementById('loader').style.display = 'block';
+            
+            html2canvas(captureArea, {
+                backgroundColor: "#000000",
+                scale: 2 // High quality
+            }).then(canvas => {
+                document.getElementById('loader').style.display = 'none';
+                const link = document.createElement('a');
+                link.download = 'HappyNewYear2026.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        // --- UPLOAD & CREATE CARD (Existing Logic) ---
+        let imgUrl = "";
+        async function uploadFile(){
+            const f = document.getElementById('file-inp').files[0];
+            if(!f) return;
+            if(API_KEY.includes("YOUR_")) { alert("Put API Key in code!"); return; }
+            
+            document.getElementById('loader').style.display='block';
+            const fd = new FormData(); fd.append("image", f);
+            
+            try {
+                const r = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {method:"POST", body:fd});
+                const d = await r.json();
+                if(d.success) {
+                    imgUrl = d.data.url;
+                    document.getElementById('user-img').src=imgUrl;
+                    document.getElementById('user-img').style.display='block';
+                    document.getElementById('frame-txt').style.display='none';
+                }
+            } catch(e){ alert("Error uploading"); }
+            document.getElementById('loader').style.display='none';
+        }
+
+        async function createCard() {
+            const n = document.getElementById('name-inp').value;
+            if(!n) { alert("Enter Name"); return; }
+            
+            let url = window.location.href.split('?')[0] + `?name=${encodeURIComponent(n)}`;
+            if(imgUrl) url += `&img=${encodeURIComponent(imgUrl)}`;
+            
+            let short = url;
+            try {
+                const r = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+                if(r.ok) short = await r.text();
+            } catch(e){}
+
+            const msg = `*${n}* ne apke liye 2026 ka Surprise bheja hai 🎁\n\nApna Luck check karein: ${short}`;
+            document.getElementById('wa-link').href=`whatsapp://send?text=${encodeURIComponent(msg)}`;
+            document.getElementById('tg-link').href=`https://t.me/share/url?url=${short}&text=${encodeURIComponent(msg)}`;
+            document.getElementById('share-dock').style.display='flex';
+            
+            window.shareObj = { title:"2026 Gift", text:msg, url:short };
+            alert("Link Ready! Share below 👇");
+        }
+
+        function nativeShare() {
+            if(navigator.share) navigator.share(window.shareObj);
+            else alert("Link copied!");
+        }
+
+        // --- TIMER ---
+        const target = new Date("Jan 1, 2026 00:00:00").getTime();
+        setInterval(()=>{
+            const dif = target - new Date().getTime();
+            if(dif>0){
+                document.getElementById('d').innerText=Math.floor(dif/(1000*60*60*24));
+                document.getElementById('h').innerText=Math.floor((dif%(1000*60*60*24))/(1000*60*60));
+                document.getElementById('m').innerText=Math.floor((dif%(1000*60*60))/(1000*60));
+                document.getElementById('s').innerText=Math.floor((dif%(1000*60))/1000);
+            }
+        },1000);
+
+        window.onload = () => {
+            const p = new URLSearchParams(window.location.search);
+            if(p.get('name')) document.getElementById('wishing-name').innerHTML=`Wishes from <b style="color:var(--theme-color)">${p.get('name')}</b>`;
+            if(p.get('img')) {
+                document.getElementById('user-img').src=p.get('img');
+                document.getElementById('user-img').style.display='block';
+                document.getElementById('frame-txt').style.display='none';
+            }
+        }
+
+        // --- FIREWORKS ---
+        function startFire() {
+            const c = document.getElementById('fireworks');
+            const x = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            let p = [];
+            function Part(px, py) {
+                this.x = px; this.y = py;
+                this.vx = (Math.random()-0.5)*10; this.vy = (Math.random()-0.5)*10;
+                this.a = 1; this.c = `hsl(${Math.random()*360},100%,50%)`;
+                this.up = function() { this.x+=this.vx; this.y+=this.vy; this.a-=0.02; }
+                this.dr = function() { x.globalAlpha=this.a; x.fillStyle=this.c; x.beginPath(); x.arc(this.x,this.y,3,0,6); x.fill(); }
+            }
+            function anim() {
+                requestAnimationFrame(anim);
+                x.clearRect(0,0,c.width,c.height);
+                if(Math.random()<0.05) {
+                    let cx=Math.random()*c.width, cy=Math.random()*c.height/2;
+                    for(let i=0;i<30;i++) p.push(new Part(cx, cy));
+                }
+                p.forEach((k,i)=>{ k.up(); k.dr(); if(k.a<=0) p.splice(i,1); });
+            }
+            anim();
+        }
+    </script>
+</body>
+</html>
